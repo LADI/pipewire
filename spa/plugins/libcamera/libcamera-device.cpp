@@ -29,6 +29,7 @@
 
 #include <libcamera/camera.h>
 #include <libcamera/property_ids.h>
+#include <libcamera/base/span.h>
 
 using namespace libcamera;
 
@@ -53,6 +54,17 @@ struct impl {
 	     std::string device_id);
 };
 
+}
+
+static const libcamera::Span<const long unsigned int> cameraDevice(
+			const Camera *camera)
+{
+	const ControlList &props = camera->properties();
+
+	if (auto devices = props.get(properties::Devices))
+		return devices.value();
+
+	return {};
 }
 
 static std::string cameraModel(const Camera *camera)
@@ -90,7 +102,7 @@ static int emit_info(struct impl *impl, bool full)
 	uint32_t n_items = 0;
 	struct spa_device_info info;
 	struct spa_param_info params[2];
-	char path[256], model[256], name[256];
+	char path[256], model[256], name[256], devices_str[128];
 
 	info = SPA_DEVICE_INFO_INIT();
 
@@ -111,6 +123,22 @@ static int emit_info(struct impl *impl, bool full)
 	ADD_ITEM(SPA_KEY_DEVICE_DESCRIPTION, model);
 	snprintf(name, sizeof(name), "libcamera_device.%s", impl->device_id.c_str());
 	ADD_ITEM(SPA_KEY_DEVICE_NAME, name);
+
+	auto device_numbers = cameraDevice(impl->camera.get());
+
+	if (device_numbers.size()) {
+		devices_str[0]='\0';
+
+		/* created a space separated string of all the device numbers */
+		for (unsigned long device_number : device_numbers) {
+			char device_str[20];
+			snprintf(device_str, sizeof(device_str), "%ld ", device_number);
+			strncat(devices_str, device_str, sizeof(devices_str) - strlen(devices_str) - 1);
+		}
+
+		ADD_ITEM(SPA_KEY_DEVICE_NUMBERS, devices_str);
+	}
+
 #undef ADD_ITEM
 
 	dict = SPA_DICT_INIT(items, n_items);

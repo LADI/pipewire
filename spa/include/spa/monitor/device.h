@@ -240,6 +240,8 @@ struct spa_device_methods {
 #define SPA_KEY_DEVICE_API		"device.api"		/**< the api used by the device
 								  *  Ex. "udev", "alsa", "v4l2". */
 #define SPA_KEY_DEVICE_NAME		"device.name"		/**< the name of the device */
+#define SPA_KEY_DEVICE_NUMBERS		"device.numbers"	/**< space separated list of device nodes
+								* that the libcamera internally uses */
 #define SPA_KEY_DEVICE_ALIAS		"device.alias"		/**< alternative name of the device */
 #define SPA_KEY_DEVICE_NICK		"device.nick"		/**< the device short name */
 #define SPA_KEY_DEVICE_DESCRIPTION	"device.description"	/**< a device description */
