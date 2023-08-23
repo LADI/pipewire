@@ -1,5 +1,13 @@
 # PipeWire
 
+This is branch of project for augmenting and implementing
+JACK control API (in libjackserver.so) to match PipeWire's feature of
+multiple device support which was not available at the time when JACK
+control API was designed for the feature set of JACK1 & JACK2
+implementations. Additionall aim is extension of the JACK Control API
+with the ladish's jmcore features, which are now provided by PipeWire
+through virtual devices.
+
 [PipeWire](https://pipewire.org) is a server and user space API to
 deal with multimedia pipelines. This includes:
 
