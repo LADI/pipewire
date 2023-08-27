@@ -186,14 +186,6 @@ bool jackctl_server_unload_internal(jackctl_server_t * server, jackctl_internal_
 }
 
 SPA_EXPORT
-bool jackctl_server_load_session_file(jackctl_server_t * server_ptr, const char * file)
-{
-	// stub
-	pw_log_warn("%p: not implemented %s", server_ptr, file);
-	return false;
-}
-
-SPA_EXPORT
 bool jackctl_server_add_slave(jackctl_server_t * server, jackctl_driver_t * driver)
 {
 	// stub
