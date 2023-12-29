@@ -256,7 +256,7 @@ static struct pw_rtkit_bus *pw_rtkit_bus_get(DBusBusType bus_type)
 	struct pw_rtkit_bus *bus;
 	DBusError error;
 
-	if (getenv("DISABLE_RTKIT")) {
+	if (getenv("ENABLE_RTKIT") == NULL) {
 		errno = ENOTSUP;
 		return NULL;
 	}
@@ -838,6 +838,7 @@ struct rt_params {
 static int do_make_realtime(struct spa_loop *loop, bool async, uint32_t seq,
 		const void *data, size_t size, void *user_data)
 {
+#if 0
 	struct impl *impl = user_data;
 	const struct rt_params *params = data;
 	int err, min, max, priority = params->priority;
@@ -860,6 +861,7 @@ static int do_make_realtime(struct spa_loop *loop, bool async, uint32_t seq,
 	}
 
 	pw_log_info("acquired realtime priority %d for thread %d using RTKit", priority, pid);
+#endif
 	return 0;
 }
 
@@ -1001,11 +1003,13 @@ static int rtkit_get_bus(struct impl *impl)
 			impl->service_name = RTKIT_SERVICE_NAME;
 			impl->object_path = RTKIT_OBJECT_PATH;
 			impl->interface = RTKIT_INTERFACE;
+#if 0 /* assume rt scheduling is enabled */
 		} else {
 			res = -errno;
 			pw_log_warn("Realtime scheduling disabled: unsufficient realtime privileges, "
 				"Portal not found on session bus, and no system bus for RTKit: %m");
 			return res;
+#endif
 		}
 	}
 
@@ -1015,6 +1019,7 @@ static int rtkit_get_bus(struct impl *impl)
 static int do_rtkit_setup(struct spa_loop *loop, bool async, uint32_t seq,
 		const void *data, size_t size, void *user_data)
 {
+#if 0 /* assume rt scheduling is enabled */
 	struct impl *impl = user_data;
 	long long retval;
 
@@ -1050,7 +1055,7 @@ static int do_rtkit_setup(struct spa_loop *loop, bool async, uint32_t seq,
 	impl->rl.rlim_max = SPA_MIN(impl->rl.rlim_max, impl->rttime_max);
 
 	set_rlimit(&impl->rl);
-
+#endif
 	return 0;
 }
 #endif /* HAVE_DBUS */
